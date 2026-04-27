@@ -1,6 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.metrics import mean_squared_error, r2_score
@@ -42,6 +44,7 @@ print("R2:", r2)
 clf_model = DecisionTreeClassifier(max_depth=5, random_state=42) #классификация
 clf_model.fit(X_train, y_clf_train)
 
+y_clf_pred = clf_model.predict(X_test)
 y_proba = clf_model.predict_proba(X_test)
 
 fpr, tpr, thresholds = roc_curve(y_clf_test, y_proba[:, 1]) #roc-кривая
@@ -58,4 +61,13 @@ plt.ylabel("TPR")
 plt.title("ROC-кривая")
 plt.legend()
 plt.grid()
+plt.show()
+
+cm = confusion_matrix(y_clf_test, y_clf_pred)
+print("\nМатрица истинности (Confusion Matrix):")
+print(cm)
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=clf_model.classes_)
+disp.plot(cmap='Blues')
+plt.title("Матрица истинности")
 plt.show()
